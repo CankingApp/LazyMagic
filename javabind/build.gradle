@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+    maven {
+        url "/home/changxing/android-sdk-linux/extras/android/m2repository"
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':annimationlib')
+
+    compile deps.autoservice
+    compile deps.javapoet
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

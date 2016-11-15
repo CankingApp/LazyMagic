@@ -1,0 +1,45 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+def androidToolsVersion = '25.1.2'
+def supportLibraryVersion = '24.2.1'
+
+ext.deps = [
+        // Android
+        android: 'com.google.android:android:4.1.1.4',
+        supportCompat: "com.android.support:support-compat:$supportLibraryVersion",
+        supportAnnotations: "com.android.support:support-annotations:$supportLibraryVersion",
+        supportv4: "com.android.support:support-v4:$supportLibraryVersion",
+        supportv7: 'com.android.support:appcompat-v7:$supportLibraryVersion',
+
+        // Square
+        javapoet: 'com.squareup:javapoet:1.7.0',
+
+        // Third Party
+        javaparser: 'com.github.javaparser:javaparser-core:2.4.0',
+
+        // Test dependencies
+        autoservice: 'com.google.auto.service:auto-service:1.0-rc2',
+]

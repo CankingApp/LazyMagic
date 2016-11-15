@@ -1,0 +1,1 @@
+include ':app', ':bindview', ':javabind', ':annimationlib'
