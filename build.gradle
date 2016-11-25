@@ -19,27 +19,28 @@ allprojects {
     }
 }
 
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-def androidToolsVersion = '25.1.2'
+def androidToolsVersion = '24.0.2'
 def supportLibraryVersion = '24.2.1'
 
 ext.deps = [
+        // Build version
+        compileSdkVersion : "24",
+        bTVersion         : "$androidToolsVersion",
+
         // Android
-        android: 'com.google.android:android:4.1.1.4',
-        supportCompat: "com.android.support:support-compat:$supportLibraryVersion",
+        android           : 'com.google.android:android:4.1.1.4',
+        supportCompat     : "com.android.support:support-compat:$supportLibraryVersion",
         supportAnnotations: "com.android.support:support-annotations:$supportLibraryVersion",
-        supportv4: "com.android.support:support-v4:$supportLibraryVersion",
-        supportv7: 'com.android.support:appcompat-v7:$supportLibraryVersion',
+        supportv4         : "com.android.support:support-v4:$supportLibraryVersion",
+        supportv7         : "com.android.support:appcompat-v7:$supportLibraryVersion",
 
-        // Square
-        javapoet: 'com.squareup:javapoet:1.7.0',
-
-        // Third Party
-        javaparser: 'com.github.javaparser:javaparser-core:2.4.0',
-
-        // Test dependencies
-        autoservice: 'com.google.auto.service:auto-service:1.0-rc2',
+        // For annotation
+        javapoet          : 'com.squareup:javapoet:1.7.0',
+        autoservice       : 'com.google.auto.service:auto-service:1.0-rc2',
+        javaparser        : 'com.github.javaparser:javaparser-core:2.4.0',
 ]
