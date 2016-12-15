@@ -53,69 +53,52 @@ public class ProxyInfo {
     }
 
     public String generateJavaCode() {
-        TypeVariableName typeVariable =  TypeVariableName.get("T", ClassName.bestGuess(targetClassName));
+        TypeVariableName typeVariable = TypeVariableName.get("T", ClassName.bestGuess(targetClassName));
         ClassName parmClass = ClassName.get("com.canking.inject.bindview.processor", "AbstractInjector");
 
         TypeName targetType = TypeName.get(typeElement.asType());
-        ClassName Obj = ClassName.get("java.lang", "Object");
-        ClassName finder = ClassName.get("com.canking.inject.bindview", "Finder");
         ParameterizedTypeName parameter = ParameterizedTypeName.get(parmClass, typeVariable);
-        int id = typeElement.getAnnotation(ViewBinder.class).value();
 
 
-        MethodSpec inject = MethodSpec.methodBuilder("inject")
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("bind")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addAnnotation(Override.class)
-                .addParameter(finder, "finder")
-                .addParameter(typeVariable, "target")
-                .addParameter(Obj, "obj")
-                .addStatement("target.setContentView($L)", id)
-                .build();
+                .addParameter(typeVariable, "target");
+        ViewBinder a = typeElement.getAnnotation(ViewBinder.class);
+        if (a != null && a.value() != -1) {
+            methodBuilder.addStatement("target.setContentView($L)", a.value());
+        }
+        for (int key : idViewMap.keySet()) {
+            ViewInfo viewInfo = idViewMap.get(key);
+            methodBuilder.addStatement("target.$N = ($N) target.findViewById($L);", viewInfo.getName(), viewInfo.getType(), viewInfo.getId());
+        }
+
+        MethodSpec methodSpec = methodBuilder.build();
 
         //ClassName generic = ClassName.get(packageName, targetClassName);
         if (targetType instanceof ParameterizedTypeName) {
             targetType = ((ParameterizedTypeName) targetType).rawType;
         }
         //TypeName classT = ParameterizedTypeName.get(parmClass);
-        TypeSpec helloWorld = TypeSpec.classBuilder(proxyClassName)
+        TypeSpec classType = TypeSpec.classBuilder(proxyClassName)
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(typeVariable)
-                .addMethod(inject)
+                .addMethod(methodSpec)
                 .addField(typeVariable, "target", PRIVATE)
                 .addSuperinterface(parameter)
                 .build();
 
-        JavaFile javaFile = JavaFile.builder(packageName, helloWorld)
-                .build();
 
+        JavaFile javaFile = JavaFile.builder(packageName, classType)
+                .build();
         try {
             //javaFile.writeTo(System.out);
             javaFile.writeTo(filer);
         } catch (Exception e) {
-            System.out.println("javaFile.writeTo(filer)"+e.getMessage());
-            e.printStackTrace();
+            System.out.println("javaFile.writeTo(filer)" + e.getMessage());
+            //e.printStackTrace();
         }
-//
-//
-//        StringBuilder builder = new StringBuilder();
-//        builder.append("//Generated code auto. Do not modify!\n");
-//        builder.append("package ").append(packageName).append(";\n\n");
-//
-//        builder.append("import android.view.View;\n");
-//        builder.append("import com.canking.inject.bindview.Finder;\n");
-//        builder.append("import com.canking.inject.bindview.processor.AbstractInjector;\n");
-//        builder.append('\n');
-//
-//        builder.append("public class ").append(proxyClassName);
-//        builder.append("<T extends ").append(getTargetClassName()).append(">");
-//        builder.append(" implements AbstractInjector<T>");
-//        builder.append(" {\n");
-//
-//        generateInjectMethod(builder);
-//        builder.append('\n');
-//
-//        builder.append("}\n");
         return "";
 
     }
@@ -124,36 +107,6 @@ public class ProxyInfo {
         return targetClassName.replace("$", ".");
     }
 
-    private void generateInjectMethod(StringBuilder builder) {
-        builder.append("  @Override ")
-                .append("public void inject(final Finder finder, final T target, Object source) {\n");
-
-        if (layoutId > 0) {
-            builder.append("    finder.setContentView( source , ");
-            builder.append(layoutId + ");\n");
-        }
-
-        if (idViewMap.size() > 0) {
-            builder.append("    View view;\n");
-        } else {
-            builder.append("  }\n");
-            return;
-        }
-
-        for (Integer key : idViewMap.keySet()) {
-            ViewInfo viewInfo = idViewMap.get(key);
-            builder.append("    view = ");
-            builder.append("finder.findViewById(source , ");
-            builder.append(viewInfo.getId() + " );\n");
-            builder.append("    target.").append(viewInfo.getName())
-                    .append(" = ");
-            builder.append("finder.castView( view ").append(", ")
-                    .append(viewInfo.getId()).append(" , \"");
-            builder.append(viewInfo.getName() + " \" );");
-        }
-
-        builder.append("  }\n");
-    }
 
     public TypeElement getTypeElement() {
         return typeElement;

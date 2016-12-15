@@ -11,20 +11,20 @@
     tools:context="com.canking.inject.cxinjectdemo.MainActivity">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
+        android:text="Hello BindView!" />
 
     <Button
-        android:text="Button"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
         android:layout_marginLeft="41dp"
         android:layout_marginStart="41dp"
         android:layout_marginTop="138dp"
-        android:id="@+id/button" />
+        android:layout_toEndOf="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:text="Congratulations！" />
 </RelativeLayout>

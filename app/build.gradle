@@ -23,7 +23,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile deps.supportCompat
-    //   compile deps.supportv7
     compile deps.supportv7
 
     testCompile 'junit:junit:4.12'

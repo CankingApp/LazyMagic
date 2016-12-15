@@ -2,7 +2,7 @@ package com.canking.inject.bindview;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.View;
+import android.view.ViewGroup;
 
 import com.canking.inject.bindview.processor.AbstractInjector;
 
@@ -15,15 +15,13 @@ public class CxViewBinder {
 
     public static void bind(Activity activity) {
         AbstractInjector<Object> injector = findInjector(activity);
-        injector.inject(Finder.ACTIVITY, activity, activity);
+        injector.bind(activity);
     }
 
-    public static void bind(View view) {
-    }
-
-    public static void bind(Object target, View view) {
+    //not support
+    public static void bind(ViewGroup target) {
         AbstractInjector<Object> injector = findInjector(target);
-        injector.inject(Finder.VIEW, target, view);
+        injector.bind(target);
     }
 
     public static final String PROXY = "PROXY";

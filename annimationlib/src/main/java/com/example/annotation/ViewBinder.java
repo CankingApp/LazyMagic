@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD, ElementType.TYPE})
 public @interface ViewBinder {
-    @LayoutRes @IdRes int value();
+    @LayoutRes @IdRes int value() default -1;
 }

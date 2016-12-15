@@ -99,8 +99,6 @@ public class ViewInjectProcessor extends AbstractProcessor {
                                 + ele.getEnclosingElement());
 
             } else if (ele.getKind() == ElementKind.FIELD) {
-
-
                 VariableElement varElement = (VariableElement) ele;
                 TypeElement classElement = (TypeElement) ele.getEnclosingElement();
 
@@ -120,13 +118,13 @@ public class ViewInjectProcessor extends AbstractProcessor {
                                 + varElement.getSimpleName().toString()
                                 + " , id = " + id + " , fileType = "
                                 + fieldType + " getEnclosingElement:"
-                                + varElement.getEnclosingElement());
+                                + varElement.getEnclosingElement() + " fqClassName:" + fqClassName);
 
                 ProxyInfo proxyInfo = mProxyMap.get(fqClassName);
                 if (proxyInfo == null) {
                     proxyInfo = new ProxyInfo(packageName, className, filer);
-                    mProxyMap.put(fqClassName, proxyInfo);
                     proxyInfo.setTypeElement(classElement);
+                    mProxyMap.put(fqClassName, proxyInfo);
                 }
                 proxyInfo.putViewInfo(id,
                         new ViewInfo(id, fieldName, fieldType));
@@ -137,7 +135,11 @@ public class ViewInjectProcessor extends AbstractProcessor {
 
         for (String key : mProxyMap.keySet()) {
             ProxyInfo proxyInfo = mProxyMap.get(key);
-            proxyInfo.generateJavaCode();
+            try {
+                proxyInfo.generateJavaCode();
+            } catch (Exception e) {
+                System.out.println("generateJavaCode:" + e.getMessage());
+            }
         }
         System.out.println("*********Here is process build end...**********");
 
@@ -150,7 +152,7 @@ public class ViewInjectProcessor extends AbstractProcessor {
                 .replace('.', '$');
     }
 
-    private void error(Element element, String message, Object... args) {
+    private void print(Element element, String message, Object... args) {
         if (args.length > 0) {
             message = String.format(message, args);
         }
